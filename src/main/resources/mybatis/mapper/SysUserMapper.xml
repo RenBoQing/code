@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.SysUserMapper">
+    <!--    查询用户-->
+    <select id="getSysUser" parameterType="com.rbq.code.entity.SysUser" resultType="com.rbq.code.entity.SysUser">
+        select *
+        from pet_sysuser
+        where username = #{username}
+          and password = #{password}
+    </select>
+    <select id="queryAllSysUser" resultType="com.rbq.code.entity.SysUser" parameterType="com.rbq.code.entity.SysUser">
+        select *
+        from pet_sysuser
+        <where>
+            <if test="username!=null and username !=''">
+                and username like '%${username}%'
+            </if>
+            <if test="realname!=null and realname !=''">
+                and realname like '%${realname}%'
+            </if>
+            <if test="description!=null and description !=''">
+                and description like '%${description}%'
+            </if>
+        </where>
+    </select>
+</mapper>

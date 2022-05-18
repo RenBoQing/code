@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+</head>
+<style>
+    .layui-table-cell {
+        height: 55px;
+        line-height: 60px;
+        padding: 0 15px;
+        position: relative;
+        box-sizing: border-box;
+        text-align: center;
+        align-items: center;
+    }
+    .laytable-cell-1-0-11{
+        width: 200px!important;
+    }
+</style>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <legend>搜索信息</legend>
+        <div class="demoTable">
+            <div style="margin: 10px 10px 10px 10px" layui-form-pane>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">商品描述</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="detail" id="detail" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <button data-type="reload" class="layui-btn layui-btn-primary"><i class="layui-icon"></i> 搜 索
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn layui-btn-danger data-count-delete" lay-event="delete">删除</a>
+        </script>
+    </div>
+</div>
+<script th:src="@{/lib/jquery.js}" charset="UTF-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/lib/layarea.js}" charset="utf-8"></script>
+<script type="text/javascript">
+    layui.use(['form', 'table', 'laypage'], function () {
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            layuimini = layui.layuimini;
+        laypage = layui.laypage;
+        var tableIns = table.render({
+            elem: '#currentTableId',
+            url: '/cart/queryAllCart',
+            toolbar: '#toolbarDemo',
+            id: "currentTableId",
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips'
+            }],
+            cols: [
+                [
+                    {type: "checkbox", width: 50, fixed: "left", align: "center", height: 80},
+                    {field: 'cid', width: 80, title: '编号', sort: true, align: "center", height: 80},
+                    {field: 'userid', width: 100, title: '用户编号', align: "center", height: 80},
+                    {field: 'productname', title: '商品名称', width: 360, align: "center", height: 80},
+                    {field: 'price', width: 110, title: '价格', sort: true, align: "center", height: 80},
+                    {field: 'count', width: 130, title: '數量', align: "center", height: 80},
+                    {field: 'detail', title: '商品描述', width: 440, align: "center", height: 80},
+                    {
+                        field: 'image',
+                        width: 120,
+                        height: 80,
+                        title: '商品示例图',
+                        templet: img,
+                        id: 'demo',
+                    },
+                    {
+                        field: 'createtime',
+                        width: 190,
+                        height: 60,
+                        title: '创建时间',
+                        sort: true,
+                        templet: '<div>{{ layui.util.toDateString(d.createtime, "yyyy-MM-dd HH:mm:ss") }}</div>'
+                    },
+                    {title: '操作', width: 230, templet: '#currentTableBar', fixed: "right", align: "center"}
+                ]
+            ],
+            limits: [8, 10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true
+        });
+        /*
+         多条件查询
+        */
+        var $ = layui.$, active = {
+            reload: function () {
+                //获取医院名称和电话
+                var productname = $('#productname');
+                var price = $('#price');
+                var detail = $('#detail');
+                table.reload('currentTableId', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    //传入的条件
+                    , where: {
+                        productname: productname.val(),
+                        detail: detail.val(),
+                    }
+                });
+            }
+        };
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        /*
+       删除功能
+           */
+        table.on('tool(currentTableFilter)', function (obj) {
+            var layevent = obj.event;
+            var data = obj.data;
+            //删除对应的设置
+            if (layevent === 'delete') {
+                layer.confirm('确定删除' + data.productname + "的相关信息吗", {icon: 7, title: '提示信息'}, function (index) {
+                    $.ajax({
+                        url: '/cart/del',
+                        type: 'post',
+                        data: {id: data.id},
+                        success: function (res) {
+                            layer.close(index);
+                            layer.msg("删除成功", {icon: 6});
+                            //重新加载这个表格  对应的是这个表格的id
+                            //重新加载表格
+                            tableIns.reload();
+                            table.reload('currentTableId', {})
+                        }
+                    })
+                });
+                /*
+                修改信息
+                */
+            }
+        });
+
+
+        /*
+        分页条加载
+         */
+        laypage.render({
+            elem: '#pageDemo', //分页容器的id
+            // , count: 1000 //数据总数
+            limit: 10, //每页显示的数据条数
+            skin: '#1E9FFF', //自定义选中色
+            //自定义样式
+            jump: function (obj, first) {
+                if (!first) {
+                    layer.msg('第' + obj.curr + '页', {offset: 'b'});
+                }
+            },
+        });
+    });
+</script>
+<!--图片渲染-->
+<script type="text/javascript">
+    // 表格格式化 - img 渲染
+    function img(cellvalue) {
+        return '<div class="photo-list2"><img onclick="show_img(this)"  src="' + cellvalue.image + '" alt="" width="80px" height="80px" id="demo"></div>';
+    }
+    //渲染图片 使用放大的图片
+    window.show_img = function (t) {
+        layer.photos({
+            photos: '.photo-list2',
+            shadeClose: false,
+            closeBtn: 2,
+            anim: 1,
+            isOutAnim: true,
+        });
+    }
+</script>
+</body>
+</html>

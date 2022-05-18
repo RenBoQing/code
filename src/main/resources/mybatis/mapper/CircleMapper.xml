@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.CircleMapper">
+    <!--    查詢所有的宠友圈信息-->
+    <select id="queryAllCircles" resultType="com.rbq.code.entity.Circle">
+        select *
+        from pet_circle
+        order by createtime desc
+    </select>
+    <!--查询所有的数据-->
+    <select id="queryAllCirclesVo" resultType="com.rbq.code.vovo.CircleVo" >
+        select c.id as cid,
+               c.title,
+               c.image,
+               c.imageone,
+               c.imagetwo,
+               c.viewcount,
+               c.count,
+               c.address,
+               c.comment,
+               c.createtime,
+               c.updatetime,
+               u.nickname,
+               u.avatarurl
+        from pet_circle c
+                 inner join pet_user u on c.uid = u.id
+        <where>
+            <if test="cid!=null and cid !=''">
+                and c.id =#{cid}
+            </if>
+
+        </where>
+
+    </select>
+    <insert id="addCircles" parameterType="com.rbq.code.entity.Circle" keyProperty="id" useGeneratedKeys="true">
+        insert into pet_circle(title, uid, image, imageone,imagetwo,viewcount, address, count, comment, createtime, updatetime)
+        values (#{title}, #{uid}, #{image},#{imageone},#{imagetwo}, #{viewcount}, #{address}, #{count}, #{comment}, #{createtime},
+                #{updatetime})
+    </insert>
+
+
+    <select id="queryCircleCount" resultType="map">
+        select title,count from pet_circle
+    </select>
+</mapper>

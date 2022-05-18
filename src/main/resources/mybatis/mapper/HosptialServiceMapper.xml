@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.HosptialServiceMapper">
+    <!--    查询所有的医院项目-->
+    <select id="queryAllService" resultType="com.rbq.code.entity.HosptialServiceVo">
+        select *
+        from pet_hosptial_service
+        <where>
+            <if test="id!=null and id !=''">
+                and id like '%${id}%'
+            </if>
+            <if test="name!=null and name !=''">
+                and name like '%${name}%'
+            </if>
+            <if test="price!=null and price !=''">
+                and price like '%${price}%'
+            </if>
+            <if test="status!=null and status !=''">
+                and status =#{status}
+            </if>
+        </where>
+    </select>
+    <!--根据项目的id 删除对应的项目-->
+    <delete id="deleteServiceById" parameterType="integer">
+        delete
+        from pet_hosptial_service
+        where id = #{id}
+    </delete>
+    <!--    添加项目-->
+    <insert id="addService" parameterType="com.rbq.code.entity.HosptialServiceVo">
+        insert into pet_hosptial_service (name, price, status)
+        values (#{name}, #{price}, #{status})
+    </insert>
+    <!--   批量删除-->
+    <delete id="delServiceByIds">
+        delete from pet_hosptial_service where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <!--    修改项目信息-->
+    <update id="updateServiceById" parameterType="com.rbq.code.entity.HosptialServiceVo">
+        update pet_hosptial_service
+        set name=#{name},
+            price=#{price},
+            status=#{status}
+        where id=#{id}
+    </update>
+    <!--    根据id查询对应的信息-->
+      <select id="queryHosptialServiceVoById" resultType="com.rbq.code.entity.HosptialServiceVo" parameterType="integer">
+         select  * from pet_hosptial_service where id=#{id}
+      </select>
+</mapper>

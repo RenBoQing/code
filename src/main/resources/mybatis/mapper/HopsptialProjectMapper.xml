@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.HopsptialProjectMapper">
+    <select id="queryAllProjectById" resultType="com.rbq.code.vovo.HospitalProjectVo">
+        select h.hid,
+               h.hname,
+               h.himage,
+               h.telephone,
+               h.haddress,
+               s.name,
+               s.price,
+               s.status
+        from pet_hosptial_relation r
+                 left join pet_hosptial_service s on r.sid = s.id
+                 left join pet_hospital h on h.hid = r.hsid
+        where h.hid = #{hid}
+    </select>
+    <!--查詢所有的數據-->
+    <select id="queryAllProject" resultType="com.rbq.code.vovo.HospitalProjectVo">
+        select distinct h.hid as hid,
+        r.id as rid,
+        h.hname,
+        h.himage,
+        h.telephone,
+        h.haddress,
+        s.name,
+        s.price,
+        s.status
+        from pet_hosptial_relation r
+        left join pet_hosptial_service s on r.sid = s.id
+        left join pet_hospital h on h.hid = r.hsid
+        <where>
+            <if test="id!=null and id !=''">
+                and id =#{id}
+            </if>
+            <if test="name!=null and name !=''">
+                and name like '%${name}%'
+            </if>
+            <if test="hname!=null and hname !=''">
+                and hname like '%${hname}%'
+            </if>
+            <if test="telephone!=null and telephone !=''">
+                and telephone like '%${telephone}%'
+            </if>
+            <if test="haddress!=null and haddress !=''">
+                and haddress like '%${haddress}%'
+            </if>
+        </where>
+        order by name
+    </select>
+
+    <!--根据id删除对应的项目-->
+    <delete id="deleteProjectByRid" parameterType="int">
+        delete
+        from pet_hosptial_relation
+        where id = #{rid}
+    </delete>
+    <!--  批量删除-->
+    <delete id="delProByIds">
+        delete from pet_hosptial_relation where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.UserMapper">
+    <!--微信小程序用户注册-->
+    <insert id="addUser" parameterType="com.rbq.code.entity.User">
+        insert into pet_user (nickname, password, sex, session_key, openid, avatarurl, telnumber, email, status)
+        VALUES (#{nickname}, #{password}, #{sex}, #{session_key}, #{openid}, #{avatarurl}, #{telnumber}, #{email},
+                #{status})
+    </insert>
+    <!--通过openid查询用户  -->
+    <select id="selectUserByOpenId" parameterType="string" resultType="com.rbq.code.entity.User">
+        select *
+        from pet_user
+        where openid = #{openid}
+    </select>
+    <!--用户使用电话号码登录-->
+    <select id="selectUserByTelNumber" parameterType="string" resultType="com.rbq.code.entity.User">
+        select *
+        from pet_user
+        where telnumber = #{telnumber}
+    </select>
+    <!-- 查询所有的用户 -->
+    <select id="queryAllUsers" resultType="com.rbq.code.entity.User">
+        select *
+        from pet_user
+        <where>
+            <if test="nickname!=null and nickname !=''">
+                and nickname like '%${nickname}%'
+            </if>
+            <if test="telnumber!=null and telnumber !=''">
+                and telnumber like '%${telnumber}%'
+            </if>
+            <if test="status!=null and status !=''">
+                and status =#{status}
+            </if>
+            <if test="email!=null and email !=''">
+                and email like '%${email}%'
+            </if>
+        </where>
+    </select>
+    <!--根据id删除用户-->
+    <delete id="deleteUserById" parameterType="integer">
+        delete
+        from pet_user
+        where id = #{id}
+    </delete>
+    <!-- 批量删除-->
+    <delete id="delUserByIds">
+        delete from pet_user where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <!-- 根据id查询-->
+    <select id="queryUserById" parameterType="integer" resultType="com.rbq.code.entity.User">
+        select *
+        from pet_user
+        where id = #{id}
+    </select>
+    <!-- 根据查询-->
+    <update id="updateUserById" parameterType="int">
+        update pet_user
+        set status = #{status}
+        where id = #{id}
+    </update>
+    <!-- 图表动态生成-->
+    <select id="queryUserConut" resultType="map">
+        select nickname, id
+        from pet_user
+    </select>
+    <!--   查询用户的动态发布-->
+    <select id="queryUserCommVoByUid" resultType="com.rbq.code.vovo.UserCommVo" parameterType="integer">
+        select c.id        as cid,
+               u.id        as uid,
+               c.title     as title,
+               c.count     as count,
+               c.viewcount as comcount,
+               c.image,
+               c.imageone,
+               c.createtime
+        from pet_circle c
+                 inner join pet_user u on u.id = c.uid
+        where uid = #{uid}
+    </select>
+
+    <!--    查询用户个人订单-->
+    <select id="queryUserOrderByUid" resultType="com.rbq.code.vovo.UserOrderVo">
+        select o.orderno, o.totalprice, o.receivername, o.orderstatus
+        from pet_order o
+                 left join pet_user u on u.id = o.userid
+        where userid = #{userid}
+    </select>
+    <!--   根据订单编号查询订单具体的项-->
+    <select id="queryUserOrderItemByOrderno" resultType="com.rbq.code.vovo.UserOrderItemVo">
+        select o.orderno,
+               i.productname,
+               i.protuctimg,
+               i.count,
+               i.updatetime,
+               i.protuctprice as price
+        from pet_order o
+                 left join pet_order_item i on o.orderno = i.orderid
+        where orderno = #{orderno}
+    </select>
+</mapper>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>医院数据统计页面</title>
+    <script th:src="@{/lib/echarts.min.js}"></script>
+    <style>
+        element.style {
+            position: relative;
+            width: 942px;
+            height: 535px!important;
+            padding: 0px;
+            margin: 0px;
+            border-width: 0px;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+<div id="pid-dmo" style="width:100%;height:450px; align-items: center"></div>
+<div id="pid-div" style="width:50%; height:510px;display: inline-block"></div>
+<div id="main" style="width:50%;height:510px;display: inline-block;float: left;"></div>
+<script th:src="@{/lib/jquery.js}" charset="UTF-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script type="text/javascript">
+    $(function () {
+        // 初始化
+        //var myChart = echarts.init(document.getElementById('main'));
+        var myChart = echarts.init($('#main')[0]); // 注意：这里init方法的参数的javascript对象，使用jQuery获取标签时，要将jQuery对象转成JavaScript对象；
+        // 配置图标参数
+        var options = {
+            title: {
+                text: '科室数量',
+                show: false, // 是否显示标题
+                subtext: '科室数量',
+                textStyle: {
+                    fontSize: 18 // 标题文字大小
+                }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['科室数量']
+            },
+            // X轴
+            xAxis: {
+                data: [] // 异步请求时,这里要置空  横坐标的刻度
+            },
+            // Y轴
+            yAxis: {},
+            series: [{
+                name: '科室数量',
+                type: 'bar', // 设置图表类型为柱状图
+                data: [] // 设置纵坐标的刻度(异步请求时,这里要置空)
+            }]
+        };
+        // 给图标设置配置的参数
+        myChart.setOption(options);
+        myChart.showLoading(); // 显示加载动画
+        // 异步请求加载数据
+        $.ajax({
+            url: '/hosptial/queryHosptialCount',
+            type: 'post',
+            dataType: 'json',
+            success: function (data) {
+                var names = [];
+                var nums = [];
+                $.each(data, function (index, obj) {
+                    names.push(obj.hname);
+                    nums.push(obj.departmentnumber);
+                })
+
+                myChart.hideLoading(); // 隐藏加载动画
+                myChart.setOption({
+                    legend: {
+                        data: ['科室数量']
+                    },
+                    xAxis: {
+                        data: names
+                    },
+                    series: [{
+                        name: '科室数量',
+                        type: 'bar', // 设置图表类型为柱状图
+                        data: nums // 设置纵坐标的刻度
+                    }]
+                });
+            }
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        var myChart = echarts.init($('#pid-div')[0]);
+        var option = {
+            legend: {
+                top: 'bottom'
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    mark: {show: true},
+                    dataView: {show: true, readOnly: false},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            series: [
+                {
+                    name: 'Nightingale Chart',
+                    type: 'pie',
+                    radius: [15, 150],
+                    center: ['50%', '50%'],
+                    roseType: 'area',
+                    itemStyle: {
+                        borderRadius: 8
+                    },
+                    data: []
+                }
+            ]
+        };
+        option && myChart.setOption(option);
+        $.ajax({
+            url: '/hosptial/queryHosptialCount',
+            type: 'post',
+            dataType: 'json',
+            success: function (data) {
+                var names = [];
+                var nums = [];
+                $.each(data, function (index, obj) {
+                    names.push(obj.hname);
+                    nums.push({name: obj.hname, value: obj.departmentnumber});
+                });
+
+                myChart.hideLoading(); // 隐藏加载动画
+                myChart.setOption({
+                    legend: {
+                        data: names
+                    },
+                    series: [{
+                        name: '',
+                        type: 'pie', // 设置图表类型为柱状图
+                        data: nums // 设置纵坐标的刻度
+                    }]
+                });
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        var myChart = echarts.init($('#pid-dmo')[0]);
+        var option={
+            xAxis: {
+                type: 'category',
+                data: []
+            },
+            yAxis: {
+                type: 'value'
+            },
+            series: [
+                {
+                    data: [],
+                    type: 'line'
+                }
+            ]
+        };
+        $.ajax({
+            url: '/hosptial/queryHosptialCount',
+            type: 'post',
+            dataType: 'json',
+            success: function (data) {
+                var names = [];
+                var nums = [];
+                $.each(data, function (index, obj) {
+                    names.push(obj.hname);
+                    nums.push(obj.departmentnumber);
+                })
+                myChart.hideLoading(); // 隐藏加载动画
+                myChart.setOption({
+                    legend: {
+                        data: ['科室数量']
+                    },
+                    xAxis: {
+                        type:'category',
+                        data: names
+                    },
+                    yAxis:{
+                        type: 'value'
+                    },
+                    series: [{
+                        name: '科室数量',
+                        type: 'line', // 设置图表类型为柱状图
+                        data: nums // 设置纵坐标的刻度
+                    }]
+                });
+            }
+        })
+
+    });
+</script>
+</body>
+</html>

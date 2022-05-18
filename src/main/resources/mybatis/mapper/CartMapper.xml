@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.CartMapper">
+    <resultMap id="CartEntityMap" type="com.rbq.code.entity.Cart">
+        <id column="id" property="id"/>
+    </resultMap>
+    <!--    添加到购物车-->
+    <insert id="addCart" parameterType="com.rbq.code.entity.Cart">
+        insert into pet_cart (productid, userid, count, price, createtime, updatetime, selected)
+        values (#{productid}, #{userid}, #{count}, #{price}, #{createtime}, #{updatetime}, #{selected})
+    </insert>
+    <!--     更新购物车-->
+    <update id="updateCountById" parameterType="int">
+        update pet_cart set count =#{count}
+        <where>
+            id=#{id}
+        </where>
+    </update>
+    <!--根据商品的id和用户的id来查询购物车中的数据 是否存在-->
+    <select id="findByUidAndPid" parameterType="int" resultMap="CartEntityMap">
+        select *
+        from pet_cart
+        where userid = #{userid}
+          and productid = #{productid}
+    </select>
+    <!--  根据id查询当前用户的订单数据-->
+    <select id="findByUid" resultType="com.rbq.code.vovo.CartVo" parameterType="int">
+        select c.id         as cid,
+               userid,
+               p.id         as pid,
+               c.price,
+               c.count,
+               p.detail,
+               p.name       as productname,
+               p.image,
+               p.price      as realprice,
+               c.`selected` as `select`
+        from pet_cart c
+                 left join pet_product p on c.productid = p.id
+        where userid = #{userid}
+        order by c.createtime desc
+    </select>
+    <!--     根据ids查询对应的数据-->
+    <select id="findVoByCids" resultType="com.rbq.code.vovo.CartVo">
+        select c.id as cid,userid,p.id as pid, c.price,c.count,p.detail, p.name as proceductname,p.image,p.price as
+        realprice
+        from pet_cart c
+        left join pet_product p on c.productid = p.id
+        WHERE c.id
+        IN (
+        <foreach collection="array" item="cid" separator=",">
+            #{cid}
+        </foreach>
+        )
+        order by c.createtime desc
+    </select>
+    <!--    查询所有的购物车信息-->
+    <select id="queryAllCart" resultType="com.rbq.code.vovo.CartVo" parameterType="com.rbq.code.vovo.CartVo">
+        select c.id    as cid,
+               userid,
+               p.id    as pid,
+               c.price,
+               c.count,
+               p.detail,
+               p.name  as productname,
+               p.image,
+               p.price as realprice
+               from pet_cart c
+                 left join pet_product p on c.productid = p.id
+        <where>
+            <if test="detail!=null and detail !=''">
+                and detail like '%${detail}%'
+            </if>
+        </where>
+        order by c.createtime desc
+    </select>
+</mapper>

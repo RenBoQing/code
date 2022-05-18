@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户信息更新</title>
+
+</head>
+<link rel="icon" th:href="@{images/logo.jpg}">
+<link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+<link rel="stylesheet" th:href="@{/css/layuimini.css?v=2.0.4.2}" media="all">
+<link rel="stylesheet" th:href="@{/css/themes/default.css}" media="all">
+<link rel="stylesheet" th:href="@{/lib/font-awesome-4.7.0/css/font-awesome.min.css}" media="all">
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form layuimini-form">
+        <input type="hidden" name="id" th:value="${user.id}">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户昵称</label>
+            <div class="layui-input-block">
+                <input type="text" name="nickname" readonly="readonly" placeholder=""
+                       class="layui-input"
+                       th:value="${user.nickname}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户状态</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="status" lay-skin="switch" lay-text="启用|禁用"
+                       th:checked="${user.status} eq 0">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户openid</label>
+            <div class="layui-input-block">
+                <input type="text" name="openid"  readonly="readonly" class="layui-input"
+                       th:value="${user.openid}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户头像</label>
+            <div class="layui-input-block">
+                <img th:src="${user.avatarurl}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户头像</label>
+            <div class="layui-input-block">
+                <input type="text" name="telnumber"  readonly="readonly" class="layui-input"
+                       th:value="${user.telnumber}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户头像</label>
+            <div class="layui-input-block">
+                <input type="text" name="email"  readonly="readonly" class="layui-input"
+                       th:value="${user.email}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户密码(加密后)</label>
+            <div class="layui-input-block">
+                <input type="text" name="password"  readonly="readonly" class="layui-input"
+                       th:value="${user.password}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">用户性别</label>
+            <div class="layui-input-block">
+                <input type="checkbox" disabled="disabled" name="sex" lay-skin="switch" lay-text="男|女"
+                       th:checked="${user.sex} eq 1">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="updateBtn">修改</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script th:src="@{/lib/jquery.js}" charset="UTF-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+        //监听提交
+        form.on('submit(updateBtn)', function (data) {
+            var datas = data.field;
+            //向后台发送数据并进行添加操作
+            if (datas.status = "on") {
+                datas.status = 0
+            } else {
+                datas.status = 1
+            }
+            console.log(datas);
+            $.ajax({
+                url: "/user/updateUserById",
+                type: "POST",
+                data: {
+                    id:datas.id,
+                    status:datas.status
+                },
+                success: function (result) {
+                    if (result.code == 0) {
+                        layer.msg("修改成功", {icon: 6, time: 10}, function () {
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+                    } else {
+                        layer.msg("修改失败", {icon: 2, time: 10});
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

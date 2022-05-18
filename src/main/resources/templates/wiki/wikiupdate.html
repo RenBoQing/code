@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>百科修改页面</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+</head>
+<body>
+<form class="layui-form" action="">
+
+    <div class="layui-form layuimini-form">
+        <input type="hidden" name="id" th:value="${wiki.id}">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">萌宠学名</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="required" placeholder="请输入萌宠学名" class="layui-input"
+                       th:value="${wiki.name}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">萌宠寿命</label>
+            <div class="layui-input-block">
+                <input type="text" name="age" lay-verify="required" placeholder="请输入萌宠寿命" class="layui-input" th:value="${wiki.age}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">萌宠别名</label>
+            <div class="layui-input-block">
+                <input type="text" name="chinesename" lay-verify="required" placeholder="请输入萌宠别名" class="layui-input" th:value="${wiki.chinesename}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label required">体型</label>
+            <div class="layui-input-block">
+                <input type="radio" name="shape" value="小型" title="小型" th:checked="${wiki.shape} eq '小型'">
+                <input type="radio" name="shape" value="中型" title="中型" th:checked="${wiki.shape} eq '中型'">
+                <input type="radio" name="shape" value="大型" title="大型" th:checked="${wiki.shape} eq '大型'">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">分布区域</label>
+            <div class="layui-input-block">
+                <input type="text" name="area" lay-verify="required" placeholder="请输入分布区域" value=""
+                       class="layui-input" th:value="${wiki.area}" >
+            </div>
+        </div>
+
+        <!--图片上传结束-->
+        <div class="layui-form-item">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <textarea name="character" class="layui-textarea" placeholder="请输入萌宠特征" th:text="${wiki.character}"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <textarea name="living" class="layui-textarea" placeholder="请输入萌宠生活习性" th:text="${wiki.living}"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label"></label>
+                <div class="layui-input-block">
+                    <textarea name="feeding" class="layui-textarea" placeholder="请输入萌宠喂养方法" th:text="${wiki.feeding}"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="updateBtn">修改</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script th:src="@{/lib/jquery.js}" charset="UTF-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+        //监听提交
+        form.on('submit(updateBtn)', function (data) {
+            var datas = data.field;
+            console.log(datas);
+            //向后台发送数据并进行添加操作
+            $.ajax({
+                url: "/wiki/updateWikiById",
+                type: "POST",
+                data: datas,
+                success: function (result) {
+                    if (result.code == 0) {
+                        layer.msg("修改成功", {icon: 6, time: 10
+                        }, function () {
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+                    } else {
+                        layer.msg("修改失败");
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.CommentsMapper">
+    <!--     添加一级评论-->
+    <insert id="addComments" keyProperty="id" useGeneratedKeys="true" parameterType="com.rbq.code.entity.Comments">
+        insert into pet_comments (cid, uid, details, likenumber, createtime)
+        VALUES (#{cid}, #{uid}, #{details}, #{likenumber}, #{createtime})
+    </insert>
+    <!--    根据id查询所有的数据评论-->
+    <select id="queryAllCommentsByCid" resultType="com.rbq.code.vovo.CommentsAllVo" parameterType="int">
+        select c.id           as cid,
+               com.id         as commentid,
+               u.nickname     as cnickname,
+               u.avatarurl    as cavatarurl,
+               com.details    as cdetails,
+               com.likenumber as clikenumber,
+               com.createtime as ccreatetime,
+               r.id           as rid,
+               d.nickname     as rnickname,
+               d.avatarurl    as ravatarurl,
+               r.comtent      as rcomtent,
+               r.createtime   as rcreatetime
+        from pet_circle c
+                 #        通过
+                 left join pet_comments com on c.id = com.cid
+                 left join pet_comments_reply r on r.coid = com.id
+                 left join pet_user u on com.uid = u.id
+                 left join pet_user d on d.id = r.uid
+        where c.id = #{cid}
+    </select>
+    <!--      -->
+    <resultMap id="CVO" type="com.rbq.code.vovo.CommentsVoTe">
+        <id property="cid" column="cid"/>
+        <result property="commentid" column="commentid"/>
+        <result property="cnickname" column="cnickname"/>
+        <result property="cavatarurl" column="cavatarurl"/>
+        <result property="cdetails" column="cdetails"/>
+        <result property="clikenumber" column="clikenumber"/>
+    </resultMap>
+    <select id="queryAllByCid" resultMap="CVO">
+        select c.id           as cid,
+               com.id         as commentid,
+               u.id           as cuid,
+               u.nickname     as cnickname,
+               u.avatarurl    as cavatarurl,
+               com.details    as cdetails,
+               com.likenumber as clikenumber,
+               com.createtime as ccreatetime
+        from pet_circle c
+                 left join pet_comments com on c.id = com.cid
+                 left join pet_user u on com.uid = u.id
+
+        where cid = #{id}
+    </select>
+    <!-- 根据-->
+    <select id="queryReplVoBycomid" parameterType="integer" resultType="com.rbq.code.vovo.CommentsReplVo">
+        select c.id         as commentid,
+               r.id         as rid,
+               u.id         as ruid,
+               u.nickname   as rnickname,
+               u.avatarurl  as ravatarurl,
+               r.comtent    as rcomtent,
+               r.createtime as rcreatetime
+        from pet_comments c
+                 left join pet_comments_reply r on c.id = r.coid
+                 left join pet_user u on u.id = r.uid
+        where c.id = #{commid}
+    </select>
+</mapper>

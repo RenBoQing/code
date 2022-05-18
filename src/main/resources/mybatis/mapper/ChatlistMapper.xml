@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.ChatlistMapper">
+    <resultMap id="BaseResultMap" type="com.rbq.code.entity.Chatlist">
+        <id column="listid" jdbcType="INTEGER" property="listid"/>
+        <result column="fromuid" jdbcType="INTEGER" property="fromuid"/>
+        <result column="fromuid" jdbcType="VARCHAR" property="fromname"/>
+        <result column="fromava" jdbcType="VARCHAR" property="fromava"/>
+        <result column="fromstatus" jdbcType="INTEGER" property="fromstatus"/>
+        <result column="lastcontext" jdbcType="VARCHAR" property="lastcontext"/>
+        <result column="touid" jdbcType="INTEGER" property="touid"/>
+        <result column="sendtime" property="sendtime"/>
+    </resultMap>
+    <!--    添加信息-->
+    <insert id="insert" parameterType="com.rbq.code.entity.Chatlist">
+        insert into pet_chatlist (listid, fromuid, fromava, fromstatus, lastcontext, touid, sendtime)
+        values (#{listid}, #{fromuid}, #{fromava}, #{fromstatus}, #{lastcontext}, #{touid}, #{sendtime})
+    </insert>
+    <!--    更新消息-->
+    <update id="updateByPrimaryKey" parameterType="com.rbq.code.entity.Chatlist">
+        update pet_chatlist
+        set fromuid     = #{fromuid,jdbcType=INTEGER},
+            fromname    = #{fromname,jdbcType=VARCHAR},
+            fromava     = #{fromava,jdbcType=VARCHAR},
+            fromstatus  = #{fromstatus,jdbcType=INTEGER},
+            lastcontext = #{lastcontext,jdbcType=VARCHAR},
+            touid       = #{touid,jdbcType=INTEGER},
+            sendtime    = #{sendtime}
+        where listid = #{listid,jdbcType=INTEGER}
+    </update>
+    <!--  查询信息列表-->
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select listid,
+               fromuid,
+               fromname,
+               fromava,
+               fromstatus,
+               lastcontext,
+               touid,
+               sendtime
+        from pet_chatlist
+        where listid = #{listid,jdbcType=INTEGER}
+    </select>
+
+    <!--    查询所有的聊天数据-->
+    <select id="selectAll" resultMap="BaseResultMap">
+        select listid,
+               fromuid,
+               fromname,
+               fromava,
+               fromstatus,
+               lastcontext,
+               touid,
+               sendtime
+        from pet_chatlist
+    </select>
+    <!--    通过两个的openid来查询两个用户-->
+    <select id="selectByTwoUid" resultMap="BaseResultMap">
+        select listid,
+               fromuid,
+               fromname,
+               fromava,
+               fromstatus,
+               lastcontext,
+               touid,
+               sendtime
+        from pet_chatlist
+        where fromuid = #{fromuid,jdbcType=INTEGER}
+          and touid = #{touid,jdbcType=INTEGER}
+        order by sendtime
+    </select>
+    <!--    通过uid来查询消息记录-->
+    <select id="selectByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select listid, fromuid, fromname, fromava, fromstatus, lastcontext,
+               sendtime,touid
+        from pet_chatlist
+        where  touid= #{touid,jdbcType=INTEGER}
+    </select>
+    <!--    删除聊天信息-->
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from pet_chatlist
+        where listid = #{listid,jdbcType=INTEGER}
+    </delete>
+</mapper>

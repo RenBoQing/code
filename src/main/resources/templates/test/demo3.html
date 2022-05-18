@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>轮播图</title>
+		<link rel="stylesheet" type="text/css" href="css/03.css"/>
+		<style type="text/css">
+			a{
+				text-decoration: none;
+				color: black;
+			}
+			.header{
+				display: flex;
+				flex-direction: row;
+				justify-content: center;
+				align-items: center;
+				margin-left: 25px;
+			}
+			.header img{
+				width: 60px;
+				height: 40px;
+				border-radius: 20px;
+			}
+			.header input{
+				width: 1400px;
+				height: 40px;
+			}
+			*{
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			.banner{
+				width: 1400px;
+				height: 500px;
+				margin: 10px auto;
+				box-shadow: 0 5px 10px rgb(235,192,253);
+				position: relative;
+			}
+			.banner ul{
+				width: 100%;
+				height: 100%;
+			}
+			.banner ul li{
+				position: absolute;
+				left: 0;
+				top: 0;
+				display: none;
+			}
+			.banner ul li.active{
+				display: block;
+			}
+			.banner span{
+				width: 40px;
+				height: 40px;
+				background: rgba(0,0,0,0.2);
+				color: #fff;
+				text-align: center;
+				line-height: 40px;
+				position: absolute;
+				left: 0;
+				top: 50%;
+				transform:translateY(-50%);
+				cursor: pointer;
+				font-family: "宋体";
+				font-size: 30px;
+				}
+			.banner .right{
+				right: 0;
+				left: auto;
+			}
+			.banner img{
+				width: 1400px;
+				height: 500px;
+			}
+			.dots{
+				/* z-index: 100; */
+				position: absolute;
+				left: 50%;
+				bottom: 2%;
+				transform: translateX(-50%);
+			}
+			.dots li{
+				width: 10px;
+				height: 10px;
+				background: rgb(255,255,255,0.6);
+				float: left;
+				border-radius: 50%;
+				margin: 0 5px;
+				box-shadow: 0 0 5px rgba(0,0,0,0.2);
+				cursor: pointer;
+			}
+			.dots .active{
+				background-color:rgba(0,0,0,0.6);
+			}
+			.nav{
+				width: 1600px;
+				display: flex;
+				flex-direction: row;
+				justify-content:center;
+				align-items: center;
+
+			}
+			.nav .item{
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			.nav img{
+				width: 100px;
+				height: 100px;
+				margin: 0 40px 0 40px;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<img src="http://124.221.248.30/usr/uploads/2022/04/1255915677.jpg" >
+		<input type="text">
+		<img style="width: 30px; height: 14px;" src="http://124.221.248.30/usr/uploads/2022/04/1454211193.png" />
+		</div>
+		<div class="banner">
+			<ul>
+				<li class="active"><img src="http://124.221.248.30/usr/uploads/2022/04/1110329272.jpg" alt=""></li>
+				<li><img src="http://124.221.248.30/usr/uploads/2022/04/4074615528.jpg" alt=""></li>
+				<li><img src="http://124.221.248.30/usr/uploads/2022/04/3875234689.jpg" alt=""></li>
+			</ul>
+			<span class="left">&lt;</span>
+			<span class="right">&gt;</span>
+			<ol class="dots">
+				<li class="active"></li>
+				<li></li>
+				<li></li>
+			</ol>
+		</div>
+		<div class="nav" style="margin-left: 15%">
+			<div class="item"><img src="http://124.221.248.30/usr/uploads/2022/04/1623914924.png" alt=""><a href="/test/demo">索引</a> </img></div>
+			<div class="item"><img src="http://124.221.248.30/usr/uploads/2022/04/2123345846.png" alt=""><a href="/test/demo1">寻宠</a></img> </div>
+			<div class="item"><img src="http://124.221.248.30/usr/uploads/2022/04/542724713.png" alt=""> <a href="/test/demo2">宠物帮</a></img></div>
+			<div class="item"><img src="http://124.221.248.30/usr/uploads/2022/04/2200114076.png" alt=""> <a href="/test/demo3">社区</a> </img></div>
+			<div class="item"><img src="http://124.221.248.30/usr/uploads/2022/04/2228286552.png" alt=""> <a href="/test/demo4">志愿</a> </img></div>
+			<div class="item"><img src="http://124.221.248.30/usr/uploads/2022/04/4077543466.png" alt=""> <a href="/test/demo5">其他</a> </img></div>
+		</div>
+		<div class="content" style="margin-left: 15%" >
+			<img src="http://124.221.248.30/usr/uploads/2022/04/2393038254.png" style="width: 1400px;"/>
+		</div>
+		<div class="footer" style="margin-left: 15%">
+			<img src="http://124.221.248.30/usr/uploads/2022/04/455332151.png"  style="width: 1400px;"/>
+		</div>
+	</body>
+	<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+	<script>
+		$(function(){
+			var $Banner=$(".banner");
+			var $Ullist=$(".banner ul li");
+			var $spanRight=$(".banner .right");
+			var $spanLeft=$(".banner .left");
+			var $dotsfocus=$(".banner .dots li");
+			var timer=null;
+			var num=0;
+			function autoPlay(){
+				timer=setInterval(function(){
+					num++;
+					num=num%$Ullist.length;//
+					$Ullist.eq(num).stop().fadeIn(500).siblings().fadeOut(1000);//siblings ( ) : 获取除被选中元素之外所有的同级元素节点,eq() 函数获取当前对象中指定索引所对应的的元素；
+					$dotsfocus.eq(num).addClass('active').siblings().removeClass('active');
+				},2000);
+			}
+			autoPlay();
+			$Banner.hover(function(){
+				clearInterval(timer);
+			},function(){
+				autoPlay();
+			});
+			$spanRight.click(function(){
+				num++;
+				num=num%$Ullist.length;//
+				num=num%$Ullist.length;//
+				$Ullist.eq(num).stop().fadeIn(500).siblings().fadeOut(1000);//siblings ( ) : 获取除被选中元素之外所有的同级元素节点,eq() 函数获取当前对象中指定索引所对应的的元素；
+				$dotsfocus.eq(num).addClass('active').siblings().removeClass('active');
+			})
+			$spanLeft.click(function(){
+				num--;
+				num=num%$Ullist.length;//
+				$Ullist.eq(num).stop().fadeIn(500).siblings().fadeOut(1000);//siblings ( ) : 获取除被选中元素之外所有的同级元素节点,eq() 函数获取当前对象中指定索引所对应的的元素；
+				$dotsfocus.eq(num).addClass('active').siblings().removeClass('active');
+			})
+		})
+	</script>
+</html>

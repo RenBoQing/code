@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.WelfareMapper">
+    <select id="queryAllWelfare" resultType="com.rbq.code.entity.Welfare">
+        select * from pet_welfare
+        <where>
+            <if test="id!=null and id !=''">
+                and id =#{id}
+            </if>
+            <if test="name!=null and name !=''">
+                and name like '%${name}%'
+            </if>
+            <if test="foundationname!=null and foundationname !=''">
+                and foundationname like '%${foundationname}%'
+            </if>
+            <if test="detail!=null and detail !=''">
+                and detail like '%${detail}%'
+            </if>
+            <if test="description!=null and description !=''">
+                and description like '%${description}%'
+            </if>
+        </where>
+    </select>
+    <delete id="delWelfareById" parameterType="integer">
+        delete
+        from pet_welfare
+        where id = #{id}
+    </delete>
+    <!--    添加数据-->
+    <insert id="addWelfare" parameterType="com.rbq.code.entity.Welfare">
+        insert into pet_welfare (name, foundationname, imagesone, imagestwo, imagesthree, detail, description, count,
+                                 createtime)
+        values (#{name}, #{foundationname}, #{imagesone}, #{imagestwo}, #{imagesthree}, #{detail}, #{description},
+                #{count}, #{createtime})
+    </insert>
+    <!-- 通过id查询数    -->
+    <select id="queryWelfareById" parameterType="int" resultType="com.rbq.code.entity.Welfare">
+        select *
+        from pet_welfare
+        where id = #{id}
+    </select>
+    <!--    通过id更新数据-->
+    <update id="updateWelfareById" parameterType="com.rbq.code.entity.Welfare">
+        update pet_welfare
+        set detail=#{detail},
+            description=#{description}
+        where id = #{id}
+    </update>
+
+    <select id="queryWelfareCount" resultType="map">
+        select name,count from pet_welfare
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.MessageMapper">
+    <!--    基础设置-->
+    <resultMap id="BaseResultMap" type="com.rbq.code.entity.Message">
+        <id column="messageid" jdbcType="INTEGER" property="messageid"/>
+        <result column="fromuid" jdbcType="INTEGER" property="fromuid"/>
+        <result column="touid" jdbcType="INTEGER" property="touid"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="sendtime" property="sendtime"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from pet_message
+        where messageid = #{messageId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.rbq.code.entity.Message">
+        insert into pet_message (messageid, fromuid, content,
+                                 sendtime, touid)
+        values (#{messageid,jdbcType=INTEGER}, #{fromuid,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR},
+                #{sendtime}, #{touid,jdbcType=INTEGER})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.rbq.code.entity.Message">
+        update pet_message
+        set fromuid  = #{fromuid,jdbcType=INTEGER},
+            content  = #{content,jdbcType=VARCHAR},
+            sendtime = #{sendTime}
+        where messageid = #{messageid,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select messageid, fromuid, content, sendtime, touid
+        from pet_message
+        where messageid = #{messageid,jdbcType=INTEGER}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select messageid, fromuid, content, sendtime
+        from pet_message
+    </select>
+    <select id="selectByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select fromuid, content, sendtime
+        from pet_message
+        where (fromuid = #{fromuid,jdbcType=INTEGER} and touid = #{touid,jdbcType=INTEGER})
+           or (fromuid = #{fromuid,jdbcType=INTEGER} and touid = #{touid,jdbcType=INTEGER})
+        order by sendtime desc
+    </select>
+</mapper>

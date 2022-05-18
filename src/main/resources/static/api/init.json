@@ -1,0 +1,206 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "home/dashboard"
+  },
+  "logoInfo": {
+    "title": "",
+    "image": "images/logo.jpg",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "常规管理",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "萌宠用户管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "小程序用户统计",
+              "href": "wxuser/statistics",
+              "icon": "layui-icon layui-icon-user",
+              "target": "_self"
+            },
+            {
+              "title": "小程序用户管理",
+              "href": "wxuser/user",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "萌宠医院管理",
+          "href": "",
+          "icon": "fa fa-window-maximize",
+          "target": "_self",
+          "child": [
+            {
+              "title": "医院数据统计",
+              "href": "hosptial/hosptialcount",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "医院数据管理",
+              "href": "hosptial/hosptial",
+              "icon": "layui-icon layui-icon-user",
+              "target": "_self"
+            },
+            {
+              "title": "医院项目管理",
+              "href": "hosptial/project",
+              "icon": "fa fa-tags",
+              "target": "_self"
+            },
+            {
+              "title": "医院护理管理",
+              "href": "hosptial/service",
+              "icon": "fa fa-hourglass-end",
+              "target": "_self"
+            }
+
+          ]
+        },
+        {
+          "title": "萌宠权限管理",
+          "icon": "fa fa-gears",
+          "target": "_self",
+          "child": [
+            {
+              "title": "管理员数据列表",
+              "href": "sysuser/sysuser",
+              "icon": "fa fa-tachometer",
+              "target": "_self"
+            },
+            {
+              "title": "管理员权限管理",
+              "href": "sysuser/sysmenu",
+              "icon": "layui-icon layui-icon-user",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "萌宠百科管理",
+          "href": "",
+          "icon": "fa fa-file-text",
+          "target": "_self",
+          "child": [
+            {
+              "title": "百科大数据",
+              "href": "/wiki/data",
+              "icon": "fa fa-list-alt",
+              "target": "_self"
+            },
+            {
+              "title": "百科数据管理",
+              "href": "wiki/wiki",
+              "icon": "fa fa-navicon",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "萌宠商城管理",
+          "href": "",
+          "icon": "fa fa-calendar",
+          "target": "_self",
+          "child": [
+            {
+              "title": "商城大数据",
+              "href": "mall/data",
+              "icon": "fa fa-list-alt",
+              "target": "_self"
+            },
+            {
+              "title": "萌宠商品管理",
+              "href": "mall/product",
+              "icon": "fa fa-navicon",
+              "target": "_self"
+            },
+            {
+              "title": "萌宠购物车管理",
+              "href": "mall/cart",
+              "icon": "fa fa-viacoin",
+              "target": "_self"
+            },
+            {
+              "title": "宠物订单管理",
+              "href": "mall/order",
+              "icon": "fa fa-hourglass-end",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "萌宠领养管理",
+          "href": "",
+          "icon": "fa fa-flag-o",
+          "target": "_self",
+          "child": [
+            {
+              "title": "领养大数据",
+              "href": "adopt/data",
+              "icon": "fa fa-stumbleupon-circle",
+              "target": "_self"
+            },
+            {
+              "title": "领养管理",
+              "href": "adopt/adopt",
+              "icon": "fa fa-viacoin",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "萌宠公益管理",
+          "href": "",
+          "icon": "fa fa-home",
+          "target": "_self",
+          "child": [
+            {
+              "title": "公益大数据",
+              "href": "welfare/data",
+              "icon": "fa fa-snowflake-o",
+              "target": "_self"
+            },
+            {
+              "title": "宠物公益",
+              "href": "welfare/welfare",
+              "icon": "fa fa-hourglass-end",
+              "target": "_self"
+            }
+
+          ]
+        },
+        {
+          "title": "萌宠动态管理",
+          "href": "",
+          "icon": "fa fa-snowflake-o",
+          "target": "",
+          "child": [
+            {
+              "title": "动态大数据",
+              "href": "circle/data",
+              "icon": "fa fa-stumbleupon-circle",
+              "target": "_self"
+            },
+            {
+              "title": "宠友圈动态管理",
+              "href": "circle/circle",
+              "icon": "fa fa-snowflake-o",
+              "target": "_self"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

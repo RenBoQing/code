@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>项目添加页面</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form layuimini-form">
+        <input type="hidden" name="id" th:value="${hosptialServiceVo.id}">
+        <div class="layui-form-item">
+            <label class="layui-form-label required">项目名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="name" lay-verify="required" placeholder="请输入项目名称" class="layui-input"
+                       th:value="${hosptialServiceVo.name}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label required">项目价格</label>
+            <div class="layui-input-block">
+                <input type="text" name="price" lay-verify="required" placeholder="请输入项目价格" class="layui-input"
+                       th:value="${hosptialServiceVo.price}">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">状态</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="status" lay-skin="switch" lay-text="已上线|已下线" th:checked="${hosptialServiceVo.status} eq 0">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="updateBtn">修改</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+    </div>
+</form>
+
+<script th:src="@{/lib/jquery.js}" charset="UTF-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+        //监听提交
+        form.on('submit(updateBtn)', function (data) {
+            var datas = data.field;
+            //向后台发送数据并进行添加操作
+            if(datas.status="on"){
+                datas.status=0
+            }
+            else if(datas.status="off"){
+                datas.status=1
+            }
+            console.log(datas);
+            $.ajax({
+                url: "/service/updateService",
+                type: "POST",
+                data: datas,
+                success: function (result) {
+                    if (result.code == 0) {
+                        layer.msg("修改成功", {icon: 6, time: 10}, function () {
+                            parent.window.location.reload();//重新页面
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                        });
+                    } else {
+                        layer.msg("修改失败",{icon:2,time:10});
+                    }
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

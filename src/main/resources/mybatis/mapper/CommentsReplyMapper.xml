@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.CommentsReplyMapper">
+    <insert id="addCommentReply" parameterType="com.rbq.code.entity.CommentsReply" keyProperty="id" useGeneratedKeys="true">
+        insert into pet_comments_reply(coid, uid, cuid, comtent, createtime)
+        values (#{coid}, #{uid}, #{cuid}, #{comment}, #{createtime})
+    </insert>
+
+
+
+</mapper>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.ProductMapper">
+
+    <resultMap id="PC" type="com.rbq.code.entity.Product">
+        <id property="id" column="id"></id>
+        <result column="name" property="name"/>
+        <result column="image" property="image"/>
+        <result column="detail" property="detail"/>
+        <result column="categoryid" property="categoryid"/>
+        <result column="price" property="price"/>
+        <result column="stok" property="stok"/>
+        <result column="address" property="address"/>
+        <result column="countprice" property="countprice"/>
+        <result column="status" property="status"/>
+        <result column="createtime" property="createtime"/>
+        <result column="updatetime" property="updatetime"/>
+        <association property="category" javaType="category">
+            <id column="id" property="id"/>
+            <result column="cname" property="name"/>
+            <result column="type" property="type"/>
+            <result column="ordernum" property="ordernum"/>
+            <result column="createtime" property="createtime"/>
+            <result column="updatetime" property="updatetime"/>
+        </association>
+    </resultMap>
+    <!--    查询所有的商品信息-->
+    <select id="queryAllProduct" resultMap="PC" parameterType="com.rbq.code.entity.Product">
+        select p.* ,c.name as cname,type,ordernum,p.createtime,p.updatetime from pet_product p inner
+        join pet_category c on p.categoryid=c.id
+        <where>
+            <if test="name!=null and name !=''">
+                and name like '%${name}%'
+            </if>
+            <if test="categoryid!=null and categoryid !=''">
+                and categoryid =#{categoryid}
+            </if>
+            <if test="detail!=null and detail !=''">
+                and detail like '%${detail}%'
+            </if>
+            <if test="address!=null and address !=''">
+                and address like '%${address}%'
+            </if>
+        </where>
+    </select>
+    <!--    根据id删除商品-->
+    <delete id="deleteProductById" parameterType="int">
+        delete
+        from pet_product
+        where id = #{id}
+    </delete>
+
+    <!--    商品上架-->
+    <insert id="addProduct" parameterType="com.rbq.code.entity.Product">
+        insert into pet_product(name, image, detail, categoryid, price, stok, countprice, address, createtime,
+                                updatetime, status)
+        values (#{name}, #{image}, #{detail}, #{categoryid}, ${price}, #{stok}, #{countprice}, #{address},
+                #{createtime}, #{updatetime}, #{status})
+    </insert>
+    <!--    根据id查询商品-->
+    <select id="queryProductById" parameterType="int" resultType="com.rbq.code.entity.Product">
+        select *
+        from pet_product
+        where id = #{id}
+    </select>
+    <!--  更新购物车-->
+    <update id="updateProductById" parameterType="com.rbq.code.entity.Product">
+        update pet_product
+        set name=#{name},
+            address=#{address},
+            categoryid=#{categoryid},
+            countprice=#{countprice},
+            detail=#{detail},
+            price=#{price},
+            status=#{status},
+            stok=#{stok},
+            updatetime=#{updatetime}
+        where id = #{id}
+    </update>
+
+    <delete id="delProductByIds">
+        delete from pet_product where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="queryProductCount" resultType="map">
+       select name,stok from pet_product
+    </select>
+</mapper>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/css/public.css}" media="all">
+</head>
+
+<style>
+    .layui-table-cell {
+        height: 55px;
+        line-height: 28px;
+        padding: 0 15px;
+        position: relative;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    .layui-table-cell {
+        line-height: 67px !important;
+    }
+
+    .laytable-cell-1-0-10 {
+        width: 180px !important;
+    }
+
+    .laytable-cell-1-0-9 {
+        width: 180px !important;
+    }
+
+    .laytable-cell-1-0-8 {
+        width: 210px !important;
+    }
+
+    .laytable-cell-1-0-3 {
+        width: 260px !important;
+    }
+
+    .laytable-cell-1-0-4 {
+        width: 150px !important;
+    }
+
+    .laytable-cell-1-0-5 {
+        width: 130px !important;
+    }
+
+    .laytable-cell-1-0-11 {
+        width: 177px !important;
+    }
+
+    .laytable-cell-1-0-7 {
+        width: 116px !important;
+    }
+
+    .laytable-cell-1-0-2 {
+        width: 170px !important;
+    }
+</style>
+<body>
+<div class="layuimini-container">
+    <div class="layuimini-main">
+        <!--查询条件开始-->
+        <div style="margin: 10px 10px 10px 10px">
+            <div class="demoTable">
+                医院名称
+                <div class="layui-inline">
+                    <input class="layui-input" name="hname" id="hname" autocomplete="off">
+                </div>
+                医院地址
+                <div class="layui-inline">
+                    <input class="layui-input" name="haddress" id="haddress" autocomplete="off">
+                </div>
+                联系电话
+                <div class="layui-inline">
+                    <input class="layui-input" name="telephone" id="telephone" autocomplete="off">
+                </div>
+                <div class="layui-inline">
+                    <button class="layui-btn" data-type="reload"><i class="layui-icon"></i> 搜 索</button>
+                </div>
+            </div>
+        </div>
+        <!--        查询结束-->
+        <!--                表的头部上方-->
+        <script type="text/html" id="toolbarDemo">
+            <div class="layui-btn-container">
+                <button class="layui-btn-radius layui-btn data-add-btn" lay-event="add">添加</button>
+                <button class="layui-btn-radius layui-btn layui-btn-danger data-delete-btn" id="delWikiByIds">删除
+                </button>
+            </div>
+        </script>
+        <!--表格渲染-->
+        <div id="pageDemo">
+            <table class="layui-hide" id="currentTableId" lay-filter="currentTableFilter"></table>
+        </div>
+        <script type="text/html" id="currentTableBar">
+            <a class="layui-btn layui-btn-radius layui-btn-normal" lay-event="edit">编辑</a>
+            <a class="layui-btn layui-btn-radius layui-btn-danger" lay-event="delete">删除</a>
+        </script>
+    </div>
+</div>
+<script th:src="@{/lib/jquery.js}" charset="UTF-8"></script>
+<script th:src="@{/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/lib/layarea.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form', 'table', 'layer', 'laypage'], function () {
+        //加载页面表格区域
+        var $ = layui.jquery,
+            form = layui.form,
+            table = layui.table,
+            layuimini = layui.layuimini,
+            laypage = layui.laypage,
+            layer = layui.layer;
+        //表格渲染
+        var tableIns = table.render({
+            url: '/hosptial/list',
+            toolbar: '#toolbarDemo',
+            elem: '#currentTableId',
+            id: "currentTableId",
+            defaultToolbar: ['filter', 'exports', 'print', {
+                title: '提示',
+                layEvent: 'LAYTABLE_TIPS',
+                icon: 'layui-icon-tips',
+            }],
+            cols: [
+                [
+                    {type: "checkbox", width: 50, fixed: "left"},
+                    {field: 'hid', width: 100, height: 60, title: '编号', sort: true},
+                    {field: 'hname', width: 150, height: 60, title: '名称'},
+                    {field: 'haddress', width: 200, height: 60, title: '地址', sort: true},
+                    {field: 'hdetalis', width: 150, height: 60, title: '具体情况', align: "center"},
+                    {field: 'telephone', width: 200, height: 60, title: '联系电话', align: "center"},
+                    {
+                        field: 'status',
+                        width: 100,
+                        height: 60,
+                        title: '状态',
+                        align: "center",
+                        //设置模板引擎
+                        templet: function (res) {
+                            // 0已经启用
+                            if (res.status === 0) {
+                                return "<button class='layui-btn-radius layui-btn-sm'>已审核</button>"
+                            } else if (res.status === 1) {
+                                return "<button class='layui-btn-sm layui-btn-radius layui-btn-danger'>已停用</button>"
+                            } else if (res.status === 2) {
+                                return "<button class='layui-btn-sm layui-btn-radius layui-btn-normal'>审核中</button>"
+                            } else if (res.status === 3) {
+                                return "<button class='layui-btn-sm layui-btn-radius layui-btn-normal'>待审核</button>"
+                            }
+                        }
+                    },
+                    {field: 'departmentnumber', width: 80, height: 60, title: '科室数量', align: "center"},
+                    {
+                        field: 'himage',
+                        width: 100,
+                        height: 60,
+                        title: '医院示例图',
+                        templet: img,
+                        id: 'demo'
+                    },
+                    {
+                        field: 'createtime',
+                        width: 150,
+                        height: 60,
+                        title: '创建时间',
+                        sort: true,
+                        templet: '<div>{{ layui.util.toDateString(d.createtime, "yyyy-MM-dd HH:mm:ss") }}</div>'
+                    },
+                    {
+                        field: 'updatetime',
+                        width: 150,
+                        height: 60,
+                        title: '更新时间',
+                        sort: true,
+                        templet: '<div>{{ layui.util.toDateString(d.updatetime, "yyyy-MM-dd HH:mm:ss") }}</div>'
+                    },
+
+                    {
+                        title: '操作',
+                        minWidth: 150,
+                        height: 60,
+                        templet: '#currentTableBar',
+                        fixed: "right",
+                        align: "center",
+                    }
+                ]
+
+            ],
+            limits: [5, 10, 15, 20, 25, 50, 100],
+            limit: 10,
+            page: true
+        });
+
+        //取出每一行的值 便于修改操作
+        function setFormValue(obj, data) {
+            //data是每一行的属性
+            //    res是用户输入的内容
+            //    快速为表格赋值
+            form.val("updateBtn", {
+                hid: data.hid,
+                hname: data.hname,
+                status: data.status,
+                haddress: data.haddress,
+                telephone: data.telephone,
+                hdetalis: data.hdetalis,
+            });
+            //监听按钮   发送请求
+        }
+
+        /*
+           修改
+         */
+        form.on('submit(updateBtn)', function (res) {
+            var datas = res.field;
+            if (datas.status === '已停用') {
+                res.field.status = 1;
+            } else if (datas.status === '已审核') {
+                res.field.status = 0;
+            } else if (datas.status === '审核中') {
+                res.field.status = 2;
+            } else if (datas.status === '待审核') {
+                res.field.status = 3;
+            }
+            //向后台发送请求
+            $.ajax({
+                url: '/hosptial/update',
+                type: 'POST',
+                data: datas,
+                success: function (res) {
+                    if (res.code === 200) {
+                        layer.msg("修改成功", {icon: 6, time: 400,}, function () {
+                                var iframeIndex = parent.layer.getFrameIndex(window.name);
+                                parent.layer.close(iframeIndex);
+                                tableIns.reload();
+                            }
+                        );
+                    } else {
+                        layer.msg("修改失败", {icon: 5});
+                    }
+                },
+
+            })
+        })
+        //监听查询按钮
+        var $ = layui.$, active = {
+            reload: function () {
+                //获取医院名称和电话
+                var hname = $('#hname');
+                var haddress = $('#haddress');
+                var telephone = $('#telepone');
+                table.reload('currentTableId', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    //传入的条件
+                    , where: {
+                        hname: hname.val(),
+                        haddress: haddress.val(),
+                        telephone: telephone.val(),
+                    }
+                });
+            }
+        };
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        //  监听侧边栏 进行删除和修改操作 currentTableFilter这里是表的filter属性
+        table.on('tool(currentTableFilter)', function (obj) {
+            var layevent = obj.event;
+            var data = obj.data;
+            //删除对应的设置
+            if (layevent === 'delete') {
+                layer.confirm('确定删除' + data.hname + "的相关信息吗", {icon: 7, title: '提示信息'}, function (index) {
+                    $.ajax({
+                        url: '/hosptial/del',
+                        type: 'post',
+                        data: {id: data.hid},
+                        success: function (res) {
+                            layer.close(index);
+                            layer.msg("删除成功", {icon: 6});
+                            //重新加载这个表格  对应的是这个表格的id
+                            table.reload('currentTableId', {})
+                        }
+                    })
+                });
+                //    修改医院信息
+            } else if (layevent === 'edit') {
+                layer.msg("修改医院信息", {icon: 6})
+                //    使用弹出层来进行修改信息
+                layer.open({
+                    type: 1,
+                    title: "修改医院信息",
+                    area: ['800px', '600px'],
+                    //这里取出的是弹出层的id
+                    content: $('#updateHosptial')
+                })
+                //    获取这行的数据  进行填充  设置函数
+                setFormValue(obj, data);
+            }
+        });
+        //   监听添加事件
+        // 监听添加操作
+        $(".data-add-btn").on("click", function (res) {
+            var index = layer.open({
+                //  type 表示类型
+                type: 2,
+                title: '添加医院界面',
+                // 弹出框的大小
+                area: ['800px', '600px'],
+                //在html中设置script的代码 进行渲染
+                content: '/hosptial/hosptialadd',
+            });
+            //添加到行
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+            //刷新表格
+            tableIns.reload();
+        });
+        /*
+           监听  批量删除
+         */
+        //批量删除
+        $("#delWikiByIds").click(function () {
+            var checkStatus = table.checkStatus('currentTableId'),
+                data = checkStatus.data,
+                userId = "";
+            if (data.length > 0) {
+                for (var i in data) {
+                    userId += data[i].hid + ",";
+                }
+                console.log(userId);
+                layer.confirm('确定删除选中的用户？', {icon: 3, title: '提示信息'}, function (index) {
+                    $.post('/hosptial/delHosptialByIds', {ids: userId}, function (data) {
+                        layer.msg("删除成功", {icon: 6})
+                        tableIns.reload();
+                        //重新加载表格
+                        layer.close(index);
+                    });
+                })
+            } else {
+                layer.msg("请选择需要删除的用户");
+            }
+        });
+
+        //    加载分页条
+        laypage.render({
+            elem: '#pageDemo', //分页容器的id
+            // , count: 1000 //数据总数
+            limit: 10, //每页显示的数据条数
+            skin: '#1E9FFF', //自定义选中色
+            //自定义样式
+            jump: function (obj, first) {
+                if (!first) {
+                    layer.msg('第' + obj.curr + '页', {offset: 'b'});
+                }
+            },
+        });
+
+    });
+</script>
+<!--图片渲染-->
+<script type="text/javascript">
+    // 表格格式化 - img 渲染
+    function img(cellvalue) {
+        return '<div class="photo-list2"><img onclick="show_img(this)"  src="' + cellvalue.himage + '" alt="" width="50px" height="50px" id="demo"></div>';
+    }
+
+    //渲染图片 使用放大的图片
+    window.show_img = function (t) {
+        layer.photos({
+            photos: '.photo-list2',
+            shadeClose: false,
+            closeBtn: 2,
+            anim: 1,
+            isOutAnim: true,
+        });
+    }
+</script>
+<!--弹出层div  也就是对应的 lay-filter="updateBtn" 这个是对应的提交按钮的id -->
+<div class="layui-form layuimini-form" id="updateHosptial" style="display: none" lay-filter="updateBtn">
+    <div class="layui-form-item">
+        <label class="layui-form-label required">医院名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="hname" lay-verify="required" placeholder="请输入医院名称" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">状态</label>
+        <div class="layui-input-block">
+            <input type="radio" name="status" value="已审核" title="已审核">
+            <input type="radio" name="status" value="已停用" title="已停用" checked="">
+            <input type="radio" name="status" value="审核中" title="审核中">
+            <input type="radio" name="status" value="待审核" title="待审核">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">医院地址</label>
+        <div class="layui-input-block">
+            <input type="text" name="haddress" lay-verify="required" placeholder="请输入医院地址" value=""
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">联系电话</label>
+        <div class="layui-input-block">
+            <input type="number" name="telephone" lay-verify="required|phone" placeholder="请输入联系电话" value=""
+                   class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">医院概述</label>
+        <div class="layui-input-block">
+            <textarea name="hdetalis" class="layui-textarea" placeholder="请输入医院概述"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="updateBtn">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

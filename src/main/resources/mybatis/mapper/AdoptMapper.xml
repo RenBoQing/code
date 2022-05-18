@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.AdoptMapper">
+    <!--    查询所有的领养宠物信息 带上分页和模糊查询-->
+    <select id="queryAllAdopt" resultType="com.rbq.code.entity.Adopt">
+        select *
+        from pet_adopt
+        <where>
+            <if test="name!=null and name !=''">
+                and name like '%${name}%'
+            </if>
+            <if test="category!=null and category !=''">
+                and category like '%${category}%'
+            </if>
+            <if test="situation!=null and situation !=''">
+                and situation like '%${situation}%'
+            </if>
+            <if test="address!=null and address !=''">
+                and address like '%${address}%'
+            </if>
+            <if test="id!=null and id !=''">
+                and id =#{id}
+            </if>
+            <if test="age!=null and age !=''">
+                and age like '%${age}%'
+            </if>
+            <if test="status!=null and status !=''">
+                and status like '%${status}%'
+            </if>
+        </where>
+    </select>
+    <!-- 根据id删除领养信息 -->
+    <delete id="deleteAdoptById" parameterType="int">
+        delete
+        from pet_adopt
+        where id = #{id}
+    </delete>
+    <!--    批量删除-->
+    <delete id="delAdoptsByIds">
+        delete from pet_adopt where id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <!--    添加领养信息-->
+    <insert id="addAdopts" parameterType="com.rbq.code.entity.Adopt">
+        insert into pet_adopt(name, sex, age, image, address, description, category, createtime, situation,
+                              rescueinfo, status)
+        values (#{name}, #{sex}, #{age}, #{image}, #{address}, #{description}, #{category},
+                #{createtime}, #{situation}, #{rescueinfo}, #{status})
+    </insert>
+    <!--  根据id查询-->
+    <select id="queryAdoptById" parameterType="integer" resultType="com.rbq.code.entity.Adopt">
+        select *
+        from pet_adopt
+        where id = #{id}
+    </select>
+    <!--    修改领养信息 -->
+    <update id="updateAdopts" parameterType="com.rbq.code.entity.Adopt">
+        update pet_adopt
+        set name=#{name},
+        sex=#{sex},
+        age=#{age},
+        address=#{address},
+        status=#{status},
+        category=#{category},
+        situation=#{situation},
+        rescueinfo=#{rescueinfo},
+        updaetime=#{updaetime}
+        <where>
+            id=#{id}
+        </where>
+    </update>
+    <!--    按照时间进行倒序排序-->
+    <select id="queryAllAdoptBytime" resultType="com.rbq.code.entity.Adopt">
+        select *
+        from pet_adopt
+        <where>
+            <if test="name!=null and name !=''">
+                and name like '%${name}%'
+            </if>
+            <if test="category!=null and category !=''">
+                and category like '%${category}%'
+            </if>
+            <if test="situation!=null and situation !=''">
+                and situation like '%${situation}%'
+            </if>
+            <if test="address!=null and address !=''">
+                and address like '%${address}%'
+            </if>
+            <if test="id!=null and id !=''">
+                and id =#{id}
+            </if>
+            <if test="age!=null and age !=''">
+                and age like '%${age}%'
+            </if>
+            <if test="status!=null and status !=''">
+                and status like '%${status}%'
+            </if>
+        </where>
+        order by createtime DESC
+    </select>
+    <select id="queryAdoptCount" resultType="map">
+       select id ,name from pet_adopt
+    </select>
+</mapper>

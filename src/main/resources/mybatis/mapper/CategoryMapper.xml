@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.CategoryMapper">
+    <resultMap id="CP" type="com.rbq.code.entity.Category">
+        <!--        将分类表作为主表 和商品表联系-->
+        <id property="id" column="id"></id>
+        <!--        这里需要的是哪一列-->
+        <result column="cname" property="name"/>
+        <result column="type" property="type"/>
+        <result column="cctime" property="createtime"/>
+        <result column="cutime" property="updatetime"/>
+        <result column="ordernum" property="ordernum"/>
+        <!-- 关联表的数据-->
+        <association property="product" javaType="product">
+            <id property="id" column="id"></id>
+            <result column="name" property="name"/>
+            <result column="image" property="image"/>
+            <result column="detail" property="detail"/>
+            <result column="categoryid" property="categoryid"/>
+            <result column="price" property="price"/>
+            <result column="stok" property="stok"/>
+            <result column="address" property="address"/>
+            <result column="countprice" property="countprice"/>
+            <result column="status" property="status"/>
+            <result column="createtime" property="createtime"/>
+            <result column="updatetime" property="updatetime"/>
+        </association>
+    </resultMap>
+    <!--根据分类查询所有的商品数据-->
+    <select id="queryAllProductByCategory" resultMap="CP">
+        select c.name as cname, c.type, p.*, c.createtime as cctime, c.updatetime as cutime, c.ordernum
+        from pet_category c
+                 inner join pet_product p on p.categoryid = c.id
+        where c.name = #{name}
+    </select>
+</mapper>

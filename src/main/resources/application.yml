@@ -1,0 +1,76 @@
+server:
+  port: 8081
+#    数据库配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/lc?useSSL=false&serverTimezone=Asia/Shanghai
+  mail:
+    default-encoding: UTF-8
+    host: smtp.qq.com
+    password: cwxaxuyqpjyebebd
+    username: 2098510757@qq.com
+    auth: true
+    port: 587
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+        #表示开启 DEBUG 模式，这样，邮件发送过程的日志会在控制台打印出来，方便排查错误
+        info: true
+    test-connection: false
+  #    thymeleaf配置
+  thymeleaf:
+    cache: false
+  main:
+    allow-circular-references: true
+  #    拦截器
+  http:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+      enabled: true
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  #        时间全局配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  #  静态资源
+  resources:
+  static-locations: classpath:/static/,file:${upload-path},file:${upload-path-demo},file:${upload-path-demotest},file:${upload-path-adopt},file:${upload-path-circle},file:${upload-path-product},file:${upload-path-welfare}
+  #  热部署
+  devtools:
+    restart:
+      enabled: true
+  #      开发环境
+  profiles:
+    active: dev
+#    mybatis配置
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-aliases-package: com.rbq.*.entity
+  #  mybatissql执行日志
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#文件上传
+upload-path: G:\workspace\code\src\main\resources\static\images\hosptialavtar
+upload-path-demo: G:\workspace\code\src\main\resources\static\images\wiki
+upload-path-demotest: G:\workspace\code\src\main\resources\static\images\recognition
+upload-path-adopt: G:\workspace\code\src\main\resources\static\images\adopt
+upload-path-circle: G:\workspace\code\src\main\resources\static\images\circle
+upload-path-product: G:\workspace\code\src\main\resources\static\images\product
+upload-path-welfare : G:\workspace\code\src\main\resources\static\images\welfare
+#日志设置
+logging:
+  config: classpath:logback.xml
+
+
+

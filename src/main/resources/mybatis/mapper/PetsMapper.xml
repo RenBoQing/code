@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.PetsMapper">
+    <!--    查询所有的宠物信息-->
+    <select id="queryAllPets" resultType="com.rbq.code.entity.Pets">
+        select *
+        from pet_pets
+    </select>
+    <!--添加宠物信息-->
+    <insert id="addPets" parameterType="com.rbq.code.entity.Pets">
+        insert into pet_pets (uid, nickname, birthday, sex, hobby, feedingtime)
+        VALUES (#{uid}, #{nickname}, #{birthday}, #{sex}, #{hobby}, #{feedingtime})
+    </insert>
+</mapper>

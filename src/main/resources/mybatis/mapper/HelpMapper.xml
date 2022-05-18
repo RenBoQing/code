@@ -1,0 +1,19 @@
+<?xmlqueryAllHelpVo version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rbq.code.mapper.HelpMapper">
+    <!---->
+    <select id="queryAllHelpVo" resultType="com.rbq.code.vovo.HelpVo" parameterType="com.rbq.code.vovo.HelpVo">
+        select h.id as hid, u.nickname, u.avatarurl, h.ischecked, h.content, h.keywords, h.createtime
+        from pet_help h
+                 left join pet_user u on u.id = h.userid
+        order by createtime desc
+    </select>
+    <!-- 添加救助信息-->
+    <insert id="addHelp" parameterType="com.rbq.code.entity.Help">
+        insert into pet_help(userid, ischecked, content, keywords, createtime)
+        VALUES (#{userid}, #{ischecked}, #{content}, #{keywords}, #{createtime})
+    </insert>
+
+</mapper>
